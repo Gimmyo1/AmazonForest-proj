@@ -62,7 +62,7 @@ if __name__ == "__main__":
     
     model = UNet(in_channels=4, out_channels=1)
 
-    
+    #TODO: testare il modello su dataset diverso: ATLANTIC FOREST
     model.load_state_dict(torch.load("best_model.pth"))
     print("Modello caricato.")
 
