@@ -3,7 +3,6 @@ from torch.utils.data import Dataset
 import rasterio
 import os
 from osgeo import gdal
-from utils import imgread
 import numpy as np
 import matplotlib.pyplot as plt
 import torchvision.transforms as transforms
@@ -30,17 +29,14 @@ class AmazonDataset(Dataset):
         self.image_dir = os.path.join(self.root_dir, 'image')
         self.label_dir = os.path.join(self.root_dir, 'label')
         self.image_files = os.listdir(self.image_dir)
+    
     def __len__(self):
-        """
-        Restituisce il numero di immagini nel dataset.
-        """
         return len(self.image_files)
     
 
     def __getitem__(self, idx):
         image_path = os.path.join(self.image_dir, self.image_files[idx])
         label_path = os.path.join(self.label_dir, self.image_files[idx])
-        #img=imgread(image_path)
         img = rasterio.open(image_path).read().astype(np.float32)
         label = rasterio.open(label_path).read().astype(np.float32)
         img=img/10000
@@ -66,7 +62,7 @@ class AmazonDataset(Dataset):
 dataset= AmazonDataset(root_dir=root_dir, mode='train')
 image , label=dataset[0]
 #print(image)  # Stampa la forma dell'immagine per verificare che sia corretta
-print(image)
+print(image.shape)
 print(np.unique(label))  # Stampa i valori unici dell'etichetta per verificare che siano corretti
 def multispectral_to_rgb_visualization(img, lower_percentile=5, upper_percentile=95):
 
@@ -78,7 +74,7 @@ def multispectral_to_rgb_visualization(img, lower_percentile=5, upper_percentile
     img = (img - np.min(img)) / (np.max(img) - np.min(img))
     img = (img * 255).astype(np.uint8)
     plt.imshow(img)
-    plt.axis('off')  # Rimuove gli assi per una visualizzazione più pulita
+    plt.axis('off') 
     plt.title("Multispectral Image Visualization")
     plt.show()
     return img

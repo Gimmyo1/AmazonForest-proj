@@ -57,7 +57,7 @@ def test_unet(model, dataloader_test):
 if __name__ == "__main__":
     
     dataset_test = AmazonDataset(mode='test')
-    dataloader_test = DataLoader(dataset_test, batch_size=4, shuffle=False)
+    dataloader_test = DataLoader(dataset_test, batch_size=2, shuffle=False)
 
     
     model = UNet(in_channels=4, out_channels=1)
