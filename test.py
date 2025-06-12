@@ -86,36 +86,39 @@ if __name__ == "__main__":
 
 
     metrics = ['Precision', 'Recall', 'F1-score', 'IoU']
-amazon_results = [precision_a, recall_a, f1_a, iou_a]
-atlantic_results = [precision_b, recall_b, f1_b, iou_b]
+    amazon_results = [precision_a, recall_a, f1_a, iou_a]
+    atlantic_results = [precision_b, recall_b, f1_b, iou_b]
 
-# Setup del grafico
-x = np.arange(len(metrics))
-width = 0.35
+    # Setup del grafico
+    x = np.arange(len(metrics))
+    width = 0.35
 
-fig, ax = plt.subplots(figsize=(10, 6))
-bars1 = ax.bar(x - width/2, amazon_results, width, label='Amazon')
-bars2 = ax.bar(x + width/2, atlantic_results, width, label='Atlantic Forest')
+    fig, ax = plt.subplots(figsize=(10, 6))
+    bars1 = ax.bar(x - width/2, amazon_results, width, label='Amazon')
+    bars2 = ax.bar(x + width/2, atlantic_results, width, label='Atlantic Forest')
 
-# Etichette
-ax.set_ylabel('Score')
-ax.set_title('Confronto Metriche su Test Set Amazon vs Atlantic Forest')
-ax.set_xticks(x)
-ax.set_xticklabels(metrics)
-ax.set_ylim(0, 1.05)
-ax.legend()
-ax.grid(axis='y')
+    # Etichette
+    ax.set_ylabel('Score')
+    ax.set_title('Confronto Metriche su Test Set Amazon vs Atlantic Forest')
+    ax.set_xticks(x)
+    ax.set_xticklabels(metrics)
+    ax.set_ylim(0, 1.05)
+    ax.legend()
+    ax.grid(axis='y')
 
-# Etichette numeriche sopra le barre
-for bar in bars1 + bars2:
-    height = bar.get_height()
-    ax.annotate(f'{height:.2f}',
-                xy=(bar.get_x() + bar.get_width() / 2, height),
-                xytext=(0, 3),
-                textcoords="offset points",
-                ha='center', va='bottom')
+    # Etichette numeriche sopra le barre
+    for bar in bars1 + bars2:
+        height = bar.get_height()
+        ax.annotate(f'{height:.2f}',
+                    xy=(bar.get_x() + bar.get_width() / 2, height),
+                    xytext=(0, 3),
+                    textcoords="offset points",
+                    ha='center', va='bottom')
 
-# Salva immagine
-plt.tight_layout()
-plt.savefig('comparison_test_metrics.png')
-plt.show()
+    # Salva immagine
+    plt.tight_layout()
+    plt.savefig('comparison_test_metrics.png')
+    plt.show()
+
+
+
