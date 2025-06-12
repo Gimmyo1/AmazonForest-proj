@@ -4,6 +4,9 @@ from torch.utils.data import DataLoader
 from unet import UNet
 from sklearn.metrics import precision_score, recall_score, f1_score, jaccard_score
 
+
+root_dir = "d:/Utente/Desktop/AmazonForest proj/ATLANTIC FOREST"
+
 def test_unet(model, dataloader_test):
    
     device = torch.device("cuda" if torch.cuda.is_available() else "cpu")
@@ -19,7 +22,7 @@ def test_unet(model, dataloader_test):
     with torch.no_grad(): 
         for images, labels in dataloader_test:
             images = images.to(device)
-            labels = labels.to(device)
+            labels = labels.unsqueeze(1).to(device) 
 
             # Forward
             outputs = model(images)
@@ -55,9 +58,13 @@ def test_unet(model, dataloader_test):
 
 
 if __name__ == "__main__":
+
+     # il test è effettuato sia sul test set di AMAZON (dataset di training)
+     # sia sul  validation set di "ATLANTIC FOREST", che raccoglie
+     # 100 immagini 4x512x512 della foresta atlantica.
     
     dataset_test = AmazonDataset(mode='test')
-    dataloader_test = DataLoader(dataset_test, batch_size=2, shuffle=False)
+    dataloader_test = DataLoader(dataset_test, batch_size=4, shuffle=False)
 
     
     model = UNet(in_channels=4, out_channels=1)

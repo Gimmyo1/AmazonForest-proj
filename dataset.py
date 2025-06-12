@@ -6,19 +6,29 @@ from osgeo import gdal
 import numpy as np
 import matplotlib.pyplot as plt
 import torchvision.transforms as transforms
+import albumentations as A
 
-root_dir = "d:/Utente/Desktop/Amazon forest proj/AMAZON"
+
+root_dir = "d:/Utente/Desktop/AmazonForest proj/AMAZON"
+
+def get_transform():
+    return A.Compose([
+        A.RandomCrop(width=256, height=256, p=1.0),
+        A.HorizontalFlip(p=0.5),
+        A.VerticalFlip(p=0.5),
+        A.RandomRotate90(p=0.5)
+    ], p=1)
 
 
 class AmazonDataset(Dataset):
-    def __init__(self, root_dir=root_dir, mode='train', transform=None):
+    def __init__(self, root_dir=root_dir, mode='train',transform=None):
         self.root_dir = root_dir
-        
         self.transform = transform
         self.mode = mode
 
         if mode == 'train':
             self.root_dir = os.path.join(root_dir, 'Training')
+            self.transform = get_transform()
         elif mode == 'val':
             self.root_dir = os.path.join(root_dir, 'Validation')
         elif mode == 'test':
@@ -38,10 +48,21 @@ class AmazonDataset(Dataset):
         image_path = os.path.join(self.image_dir, self.image_files[idx])
         label_path = os.path.join(self.label_dir, self.image_files[idx])
         img = rasterio.open(image_path).read().astype(np.float32)
-        label = rasterio.open(label_path).read().astype(np.float32)
+        label = rasterio.open(label_path).read(1).astype(np.float32)
         img=img/10000
         #img = img.astype(np.float32)
         #mg = gdal.Open(image_path)
+
+        #data augmentation
+        
+        if self.transform:
+            # Albumentations richiede immagini in formato HWC
+            augmented = self.transform(image=img.transpose(1, 2, 0), mask=label)
+            img = augmented["image"].transpose(2, 0, 1)  # torniamo a CHW
+            label = augmented["mask"] 
+
+        img=torch.from_numpy(img)
+        label=torch.from_numpy(label)    
 
         '''
         with rasterio.open(image_path) as src:
@@ -59,11 +80,11 @@ class AmazonDataset(Dataset):
         return img, label
     
 
-dataset= AmazonDataset(root_dir=root_dir, mode='train')
+dataset= AmazonDataset(root_dir=root_dir, mode='val')
 image , label=dataset[0]
 #print(image)  # Stampa la forma dell'immagine per verificare che sia corretta
 print(image.shape)
-print(np.unique(label))  # Stampa i valori unici dell'etichetta per verificare che siano corretti
+print(type(label))  # Stampa i valori unici dell'etichetta per verificare che siano corretti
 def multispectral_to_rgb_visualization(img, lower_percentile=5, upper_percentile=95):
 
 
