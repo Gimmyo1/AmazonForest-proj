@@ -52,7 +52,7 @@ def train_unet(model, dataloader_train, dataloader_val, num_epochs=10, learning_
         with torch.no_grad():
             for images, labels in dataloader_val:
                 images = images.to(device)
-                labels = labels.unsqueeze(1).to(device) # Assicurati che le etichette siano della forma corretta
+                labels = labels.unsqueeze(1).to(device)
 
                 outputs = model(images)
                 loss = criterion(outputs, labels)
@@ -66,16 +66,12 @@ def train_unet(model, dataloader_train, dataloader_val, num_epochs=10, learning_
         val_losses.append(avg_val_loss)
         print(f"Epoch [{epoch+1}/{num_epochs}], Validation Loss: {avg_val_loss:.4f}")
 
-        # Calcolo delle metriche
+        # metriche
         precision = precision_score(y_true, y_pred)
         recall = recall_score(y_true, y_pred)
         f1 = f1_score(y_true, y_pred)
         iou = jaccard_score(y_true, y_pred)
         iou_scores.append(iou)
-
-        #num_classes = 2
-        #iou_per_class, miou = calculate_iou_per_class(np.array(y_true), np.array(y_pred), num_classes)
-
         
 
         print(f"Epoch [{epoch+1}/{num_epochs}], Validation mIoU: {iou:.4f}")
@@ -116,7 +112,7 @@ def train_unet(model, dataloader_train, dataloader_val, num_epochs=10, learning_
 
 
 if __name__ == "__main__":
-    # Esempio di utilizzo
+
     
 
     

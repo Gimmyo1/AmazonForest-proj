@@ -73,9 +73,9 @@ class UNet(nn.Module):
         return self.output_conv(x)
     
 def test_unet():
-    model = UNet(in_channels=4, out_channels=15)
+    model = UNet(in_channels=4, out_channels=1)
     x = torch.randn((1, 4, 240, 240)) 
     output = model(x)
-    print(f"Output shape: {output.shape}")  # Dovrebbe essere (1, 15, 160, 160)
+    print(f"Output shape: {output.shape}")  # Dovrebbe essere (1, 1, 240, 240)
 
 #test_unet()

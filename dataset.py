@@ -51,14 +51,13 @@ class AmazonDataset(Dataset):
         label = rasterio.open(label_path).read(1).astype(np.float32)
         img=img/10000
         #img = img.astype(np.float32)
-        #mg = gdal.Open(image_path)
 
         #data augmentation
         
         if self.transform:
-            # Albumentations richiede immagini in formato HWC
+        
             augmented = self.transform(image=img.transpose(1, 2, 0), mask=label)
-            img = augmented["image"].transpose(2, 0, 1)  # torniamo a CHW
+            img = augmented["image"].transpose(2, 0, 1) 
             label = augmented["mask"] 
 
         img=torch.from_numpy(img)
@@ -80,11 +79,18 @@ class AmazonDataset(Dataset):
         return img, label
     
 
+
+# DEBUGGING
+
 dataset= AmazonDataset(root_dir=root_dir, mode='val')
 image , label=dataset[0]
 #print(image)  # Stampa la forma dell'immagine per verificare che sia corretta
 print(image.shape)
-print(type(label))  # Stampa i valori unici dell'etichetta per verificare che siano corretti
+print(type(label))  
+
+
+
+
 def multispectral_to_rgb_visualization(img, lower_percentile=5, upper_percentile=95):
 
 
